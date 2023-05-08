@@ -5,10 +5,10 @@ export class UpdatePlayerDto {
   @IsString()
   phone?: string;
 
-  @IsOptional()
-  @IsString()
-  @IsEmail()
-  email?: string;
+  // @IsOptional()
+  // @IsString()
+  // @IsEmail()
+  // email?: string;
 
   @IsOptional()
   @IsString()

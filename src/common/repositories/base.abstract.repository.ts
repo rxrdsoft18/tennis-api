@@ -1,11 +1,5 @@
 import { Logger } from '@nestjs/common';
-import {
-  FilterQuery,
-  Model,
-  SaveOptions,
-  Types,
-  UpdateQuery,
-} from 'mongoose';
+import { FilterQuery, Model, SaveOptions, Types, UpdateQuery } from 'mongoose';
 import { AbstractIdDocumentSchema } from './abstract-id.document.schema';
 
 export abstract class BaseAbstractRepository<
@@ -13,9 +7,7 @@ export abstract class BaseAbstractRepository<
 > {
   protected abstract readonly logger: Logger;
 
-  protected constructor(
-    protected readonly model: Model<T>,
-  ) {}
+  protected constructor(protected readonly model: Model<T>) {}
 
   async create(document: Omit<T, '_id'>, options?: SaveOptions): Promise<T> {
     const createdDocument = new this.model({
@@ -46,5 +38,9 @@ export abstract class BaseAbstractRepository<
 
   async find(filterQuery: FilterQuery<T>) {
     return this.model.find(filterQuery, {}, { lean: true });
+  }
+
+  async findOneAndDelete(filterQuery: FilterQuery<T>) {
+    return this.model.findOneAndDelete(filterQuery, { lean: true });
   }
 }

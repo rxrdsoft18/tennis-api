@@ -36,7 +36,7 @@ export class PlayersController {
     @Body() updatePlayerDto: UpdatePlayerDto,
     @Param() getPlayerDto: GetPlayerDto,
   ) {
-    return this.playersService.update(updatePlayerDto, getPlayerDto.id);
+    return this.playersService.update(getPlayerDto.id, updatePlayerDto);
   }
 
   @Delete(':id')
