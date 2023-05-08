@@ -36,7 +36,7 @@ export abstract class BaseAbstractRepository<
     });
   }
 
-  async find(filterQuery: FilterQuery<T>) {
+  find(filterQuery: FilterQuery<T>) {
     return this.model.find(filterQuery, {}, { lean: true });
   }
 

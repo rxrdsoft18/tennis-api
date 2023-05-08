@@ -10,6 +10,7 @@ import {
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { GetCategoryDto } from './dtos/get-category.dto';
+import { AssignPlayerCategoryDto } from './dtos/assign-player-category.dto';
 
 @Controller('v1/categories')
 export class CategoriesController {
@@ -35,6 +36,15 @@ export class CategoriesController {
     @Param() getCategoryDto: GetCategoryDto,
   ) {
     return this.categoriesService.update(getCategoryDto.id, updateCategoryDto);
+  }
+
+  @Post(':id/players/:playerId')
+  async assignPlayerToCategory(
+    @Param() assignPlayerToCategoryDto: AssignPlayerCategoryDto,
+  ) {
+    return this.categoriesService.assignPlayerToCategory(
+      assignPlayerToCategoryDto,
+    );
   }
 
   @Delete(':id')

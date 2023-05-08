@@ -16,11 +16,10 @@ export class Category extends AbstractIdDocumentSchema {
   @Prop()
   events: EventInterface[];
 
-  // @Prop({
-  //   type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Player' }],
-  // })
-  // @Type(() => Player)
-  // players: Player;
+  @Prop({
+    type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Player' }],
+  })
+  players: string[];
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);

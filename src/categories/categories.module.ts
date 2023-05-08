@@ -4,6 +4,7 @@ import { CategoriesService } from './categories.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Category, CategorySchema } from './schema/category.schema';
 import { CategoriesRepository } from './categories.repository';
+import { PlayersModule } from "../players/players.module";
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { CategoriesRepository } from './categories.repository';
         schema: CategorySchema,
       },
     ]),
+    PlayersModule,
   ],
   controllers: [CategoriesController],
   providers: [CategoriesService, CategoriesRepository],

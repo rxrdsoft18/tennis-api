@@ -37,14 +37,17 @@ export class PlayersService {
   }
 
   async findById(id: string) {
-    return this.playerRepository.findOne({ _id: id });
+    const player = await this.playerRepository.findOne({ _id: id });
+
+    if (!player) {
+      throw new NotFoundException('Player not found');
+    }
+
+    return player;
   }
 
   async update(id: string, updatePlayerDto: Partial<UpdatePlayerDto>) {
-    const existsPlayer = await this.findById(id);
-    if (!existsPlayer) {
-      throw new NotFoundException('Player not found');
-    }
+    await this.findById(id);
 
     return this.playerRepository.findOneAndUpdate(
       {
@@ -55,10 +58,7 @@ export class PlayersService {
   }
 
   async delete(id: string) {
-    const existsPlayer = await this.findById(id);
-    if (!existsPlayer) {
-      throw new NotFoundException('Player not found');
-    }
+    await this.findById(id);
     return this.playerRepository.findOneAndDelete({ _id: id });
   }
 }
