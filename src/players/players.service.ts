@@ -40,7 +40,7 @@ export class PlayersService {
     const player = await this.playerRepository.findOne({ _id: id });
 
     if (!player) {
-      throw new NotFoundException('Player not found');
+      throw new NotFoundException(`Player with ID ${id} not found`);
     }
 
     return player;

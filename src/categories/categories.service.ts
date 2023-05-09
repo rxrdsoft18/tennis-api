@@ -2,8 +2,8 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  NotFoundException
-} from "@nestjs/common";
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { CategoriesRepository } from './categories.repository';
 import { UpdateCategoryDto } from './dtos/update-category.dto';
@@ -88,6 +88,16 @@ export class CategoriesService {
       },
       category,
     );
+  }
+
+  async categoryByPlayerId(id: string) {
+    const category = await this.categoriesRepository.findOne({}).where('players').in([id]);
+    if (!category) {
+      throw new NotFoundException(
+        'There is no category associated with a player',
+      );
+    }
+    return category;
   }
 
   async delete(id: string) {

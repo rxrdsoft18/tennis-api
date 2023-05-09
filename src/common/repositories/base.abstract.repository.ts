@@ -17,7 +17,7 @@ export abstract class BaseAbstractRepository<
     return (await createdDocument.save(options)).toJSON() as unknown as T;
   }
 
-  async findOne(filterQuery: FilterQuery<T>): Promise<T> {
+  findOne(filterQuery: FilterQuery<T>){
     return this.model.findOne(filterQuery, {}, { lean: true });
   }
 
