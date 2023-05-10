@@ -94,7 +94,7 @@ export class CategoriesService {
     const category = await this.categoriesRepository.findOne({}).where('players').in([id]);
     if (!category) {
       throw new NotFoundException(
-        'There is no category associated with a player',
+        `There is no category associated with a player Id: ${id}`,
       );
     }
     return category;

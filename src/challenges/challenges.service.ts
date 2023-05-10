@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -10,6 +11,8 @@ import { ChallengesRepository } from './challenges.repository';
 import { ChallengeStatus } from './challenge-status.enum';
 import { PlayersService } from '../players/players.service';
 import { CategoriesService } from '../categories/categories.service';
+import { AssignChallengeGameDto } from './dtos/assign-challenge-game.dto';
+import { GamesRepository } from './games.repository';
 
 @Injectable()
 export class ChallengesService {
@@ -18,6 +21,7 @@ export class ChallengesService {
     private readonly challengesRepository: ChallengesRepository,
     private readonly playersService: PlayersService,
     private readonly categoriesService: CategoriesService,
+    private readonly gamesRepository: GamesRepository,
   ) {}
   async findById(id: string) {
     const challenge = await this.challengesRepository
@@ -116,7 +120,30 @@ export class ChallengesService {
     );
   }
 
+  async assignChallengeToGame(
+    id: string,
+    assignChallengeGame: AssignChallengeGameDto,
+  ) {
+    console.log(assignChallengeGame, 'assign challenge');
+    const challenge = await this.findById(id);
+    const game = await this.gamesRepository.create({
+      result: assignChallengeGame.result,
+      players: challenge.players,
+      category: challenge.category,
+    });
+
+    challenge.status = ChallengeStatus.DONE;
+    challenge.game = game;
+
+    try {
+      await this.challengesRepository.findOneAndUpdate({ _id: id }, challenge);
+    } catch (e) {
+      await this.gamesRepository.findOneAndDelete({ _id: game._id });
+      throw new InternalServerErrorException();
+    }
+  }
+
   async delete(id: string) {
-    return {};
+    return this.challengesRepository.findOneAndDelete({ _id: id });
   }
 }

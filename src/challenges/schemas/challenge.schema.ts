@@ -1,5 +1,5 @@
 import { AbstractIdDocumentSchema } from '../../common/repositories/abstract-id.document.schema';
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Schema as MongooseSchema } from 'mongoose';
 import { Player } from '../../players/schema/player.schema';
 import { ChallengeStatus } from '../challenge-status.enum';

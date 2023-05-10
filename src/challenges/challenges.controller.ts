@@ -12,6 +12,7 @@ import { CreateChallengeDto } from './dtos/create-challenge.dto';
 import { GetChallengeDto } from './dtos/get-challenge.dto';
 import { UpdateChallengeDto } from './dtos/update-challenge.dto';
 import { GetChallengePlayerDto } from './dtos/get-challenge-player.dto';
+import { AssignChallengeGameDto } from "./dtos/assign-challenge-game.dto";
 
 @Controller('v1/challenges')
 export class ChallengesController {
@@ -41,11 +42,6 @@ export class ChallengesController {
     return this.challengesService.create(createChallengeDto);
   }
 
-  // @Put()
-  // async answerChallenge(@Body() createChallengeDto: CreateChallengeDto) {
-  //   return this.challengesService.create(createChallengeDto);
-  // }
-
   @Patch(':id')
   async update(
     @Body() updateChallengeDto: UpdateChallengeDto,
@@ -54,6 +50,17 @@ export class ChallengesController {
     return this.challengesService.update(
       getChallengeDto.id,
       updateChallengeDto,
+    );
+  }
+
+  @Post('/:id/game')
+  async assignChallengeToGame(
+    @Body() assignChallengeGame: AssignChallengeGameDto,
+    @Param() getChallengeDto: GetChallengeDto,
+  ) {
+    return this.challengesService.assignChallengeToGame(
+      getChallengeDto.id,
+      assignChallengeGame,
     );
   }
 

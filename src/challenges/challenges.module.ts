@@ -7,6 +7,7 @@ import { Game, GameSchema } from './schemas/game.schema';
 import { ChallengesRepository } from "./challenges.repository";
 import { PlayersModule } from "../players/players.module";
 import { CategoriesModule } from "../categories/categories.module";
+import { GamesRepository } from "./games.repository";
 
 @Module({
   imports: [
@@ -24,6 +25,6 @@ import { CategoriesModule } from "../categories/categories.module";
     CategoriesModule,
   ],
   controllers: [ChallengesController],
-  providers: [ChallengesService, ChallengesRepository],
+  providers: [ChallengesService, ChallengesRepository, GamesRepository],
 })
 export class ChallengesModule {}
