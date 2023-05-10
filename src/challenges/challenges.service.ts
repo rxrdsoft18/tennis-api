@@ -144,6 +144,12 @@ export class ChallengesService {
   }
 
   async delete(id: string) {
-    return this.challengesRepository.findOneAndDelete({ _id: id });
+    await this.findById(id);
+    return this.challengesRepository.findOneAndUpdate(
+      { _id: id },
+      {
+        status: ChallengeStatus.CANCELED,
+      },
+    );
   }
 }
