@@ -3,6 +3,7 @@ import { ApiController } from './api.controller';
 import { ConfigModule } from '@nestjs/config';
 import { RabbitmqModule } from '@app/common';
 import { BACKOFFICE_SERVICE } from '@app/common';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -10,10 +11,8 @@ import { BACKOFFICE_SERVICE } from '@app/common';
       isGlobal: true,
       envFilePath: './apps/api/.env',
     }),
-    RabbitmqModule.registerMmq({
-      serviceName: BACKOFFICE_SERVICE,
-      queue: process.env.RABBIT_MQ_BACKOFFICE_QUEUE,
-    }),
+
+    CategoriesModule,
   ],
   controllers: [ApiController],
   providers: [],

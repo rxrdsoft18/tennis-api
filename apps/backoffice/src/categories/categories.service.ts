@@ -11,6 +11,7 @@ import {
   CreateCategoryDto,
   UpdateCategoryDto,
 } from '@app/common';
+import { RpcException } from "@nestjs/microservices";
 
 @Injectable()
 export class CategoriesService {
@@ -32,7 +33,7 @@ export class CategoriesService {
     const category = await this.categoriesRepository.findOne({ _id: id });
 
     if (!category) {
-      throw new NotFoundException('Category not found');
+      throw new RpcException('Category not found');
     }
 
     return category;
@@ -42,7 +43,7 @@ export class CategoriesService {
     const category = await this.findByName(createCategoryDto.name);
 
     if (category) {
-      throw new ConflictException('Category already exists');
+      throw new RpcException('Category already exists');
     }
     return this.categoriesRepository.create({
       ...createCategoryDto,
@@ -98,7 +99,7 @@ export class CategoriesService {
       .where('players')
       .in([id]);
     if (!category) {
-      throw new NotFoundException(
+      throw new RpcException(
         `There is no category associated with a player Id: ${id}`,
       );
     }

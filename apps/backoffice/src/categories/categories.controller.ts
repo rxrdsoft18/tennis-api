@@ -1,5 +1,5 @@
-import { Controller, Logger, UseFilters } from "@nestjs/common";
-import { ExceptionFilter, RabbitmqService } from "@app/common";
+import { Controller, Logger, UseFilters } from '@nestjs/common';
+import { ExceptionFilter, RabbitmqService } from '@app/common';
 import {
   Ctx,
   MessagePattern,
@@ -25,17 +25,33 @@ export class CategoriesController {
   @MessagePattern('find-id-category')
   async handleCategory(@Payload() data: any, @Ctx() ctx: RmqContext) {
     this.rabbitmqService.acknowledgeMessage(ctx);
-    return this.categoriesService.findAll();
+    return this.categoriesService.findById(data.id);
   }
 
-  // @UseFilters(new ExceptionFilter())
   @MessagePattern('create-category')
   async handleCreateCategory(@Payload() data: any, @Ctx() ctx: RmqContext) {
     this.rabbitmqService.acknowledgeMessage(ctx);
-    try {
-      return this.categoriesService.create(data);
-    } catch (e) {
-      console.log(e, 'ERROR CATEGORY BACKOFFICE');
-    }
+    return this.categoriesService.create(data);
+  }
+
+  @MessagePattern('update-category')
+  async handleUpdateCategory(@Payload() data: any, @Ctx() ctx: RmqContext) {
+    this.rabbitmqService.acknowledgeMessage(ctx);
+    return this.categoriesService.update(data.id, data.category);
+  }
+
+  @MessagePattern('assign-player-category')
+  async handleAssignPlayerCategory(
+    @Payload() data: any,
+    @Ctx() ctx: RmqContext,
+  ) {
+    this.rabbitmqService.acknowledgeMessage(ctx);
+    return this.categoriesService.assignPlayerToCategory(data);
+  }
+
+  @MessagePattern('delete-category')
+  async handleDeleteCategory(@Payload() data: any, @Ctx() ctx: RmqContext) {
+    this.rabbitmqService.acknowledgeMessage(ctx);
+    return this.categoriesService.delete(data.id);
   }
 }
