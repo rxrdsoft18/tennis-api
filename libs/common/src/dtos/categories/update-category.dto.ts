@@ -12,6 +12,7 @@ import { EventDto } from './create-category.dto';
 export class UpdateCategoryDto {
   @IsNotEmpty()
   @IsString()
+  @IsOptional()
   name?: string;
 
   @IsString()
@@ -19,6 +20,7 @@ export class UpdateCategoryDto {
   description?: string;
 
   @IsArray()
+  @IsOptional()
   @IsNotEmpty({ each: true })
   @ArrayMinSize(1)
   @ValidateNested({ each: true })

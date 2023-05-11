@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ApiController } from './api.controller';
 import { ConfigModule } from '@nestjs/config';
-import { RabbitmqModule } from '@app/common';
-import { BACKOFFICE_SERVICE } from '@app/common';
 import { CategoriesModule } from './categories/categories.module';
+import { PlayersModule } from './players/players.module';
 
 @Module({
   imports: [
@@ -11,8 +10,8 @@ import { CategoriesModule } from './categories/categories.module';
       isGlobal: true,
       envFilePath: './apps/api/.env',
     }),
-
     CategoriesModule,
+    PlayersModule,
   ],
   controllers: [ApiController],
   providers: [],

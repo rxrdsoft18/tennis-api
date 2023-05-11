@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CategoriesController } from './categories.controller';
+import { PlayersController } from './players.controller';
 import { BACKOFFICE_SERVICE, RabbitmqModule } from '@app/common';
 
 @Module({
@@ -9,6 +9,6 @@ import { BACKOFFICE_SERVICE, RabbitmqModule } from '@app/common';
       queue: 'BACKOFFICE',
     }),
   ],
-  controllers: [CategoriesController],
+  controllers: [PlayersController],
 })
-export class CategoriesModule {}
+export class PlayersModule {}

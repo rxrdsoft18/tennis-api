@@ -27,7 +27,7 @@ export class RabbitmqModule {
                 transport: Transport.RMQ,
                 options: {
                   urls: [RABBITMQ_URI],
-                  queue: options.queue,
+                  queue: configService.get(`RABBIT_MQ_${options.queue}_QUEUE`),
                 },
               };
             },

@@ -24,6 +24,7 @@ export class CategoriesController {
 
   @MessagePattern('find-id-category')
   async handleCategory(@Payload() data: any, @Ctx() ctx: RmqContext) {
+    console.log(data, ' find by id');
     this.rabbitmqService.acknowledgeMessage(ctx);
     return this.categoriesService.findById(data.id);
   }

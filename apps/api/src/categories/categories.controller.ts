@@ -1,18 +1,22 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   InternalServerErrorException,
   Logger,
   Param,
+  Patch,
   Post,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import {
+  AssignPlayerCategoryDto,
   BACKOFFICE_SERVICE,
   CreateCategoryDto,
   GetCategoryDto,
+  UpdateCategoryDto,
 } from '@app/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, of, switchMap } from 'rxjs';
@@ -52,5 +56,50 @@ export class CategoriesController {
           throw new InternalServerErrorException(err.message);
         }),
       );
+  }
+
+  @Patch(':id')
+  async update(
+    @Body() updateCategoryDto: UpdateCategoryDto,
+    @Param() getCategoryDto: GetCategoryDto,
+  ) {
+    return this.backofficeClient
+      .send('update-category', {
+        id: getCategoryDto.id,
+        category: updateCategoryDto,
+      })
+      .pipe(
+        switchMap((data) => of(data)),
+        catchError((err) => {
+          console.log(err, 'error');
+          throw new InternalServerErrorException(err.message);
+        }),
+      );
+  }
+
+  @Post(':id/players/:playerId')
+  async assignPlayerToCategory(
+    @Param() assignPlayerToCategoryDto: AssignPlayerCategoryDto,
+  ) {
+    return this.backofficeClient
+      .send('assign-player-category', assignPlayerToCategoryDto)
+      .pipe(
+        switchMap((data) => of(data)),
+        catchError((err) => {
+          console.log(err, 'error');
+          throw new InternalServerErrorException(err.message);
+        }),
+      );
+  }
+
+  @Delete(':id')
+  async delete(@Param() getCategoryDto: GetCategoryDto) {
+    return this.backofficeClient.send('delete-category', getCategoryDto).pipe(
+      switchMap((data) => of(data)),
+      catchError((err) => {
+        console.log(err, 'error');
+        throw new InternalServerErrorException(err.message);
+      }),
+    );
   }
 }
