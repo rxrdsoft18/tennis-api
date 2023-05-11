@@ -3,13 +3,18 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
   Inject,
   Logger,
+  MaxFileSizeValidator,
   NotFoundException,
   Param,
+  ParseFilePipe,
   Patch,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   BACKOFFICE_SERVICE,
@@ -18,7 +23,9 @@ import {
   UpdatePlayerDto,
 } from '@app/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { catchError, firstValueFrom, map, of, switchMap } from 'rxjs';
+import { catchError, firstValueFrom, of, switchMap } from 'rxjs';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { AwsS3Service } from '../aws/aws-s3.service';
 
 @Controller('v1/players')
 export class PlayersController {
@@ -26,6 +33,7 @@ export class PlayersController {
 
   constructor(
     @Inject(BACKOFFICE_SERVICE) private readonly backofficeClient: ClientProxy,
+    private readonly awsS3Service: AwsS3Service,
   ) {}
 
   @Get()
@@ -90,6 +98,50 @@ export class PlayersController {
           throw new BadRequestException(err.message);
         }),
       );
+  }
+
+  @Post(':id/upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadPhoto(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({
+            fileType: /(jpg|png|jpeg)/g,
+          }),
+          new MaxFileSizeValidator({
+            maxSize: 1024 * 1024 * 2,
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Param('id') id: string,
+  ) {
+    await this.awsS3Service.upload(
+      file.originalname,
+      file.buffer,
+      file.mimetype,
+    );
+
+    const body = {
+      player: {
+        urlPhoto: this.awsS3Service.buildFullURL(file.originalname),
+      },
+      id,
+    };
+    return this.backofficeClient.send('update-player', body).pipe(
+      catchError((err) => {
+        console.log(err, 'error');
+        throw new BadRequestException(err.message);
+      }),
+    );
+  }
+
+  @Get('photos/:filename')
+  async getPhoto(@Param('filename') filename: string) {
+    console.log(filename, 'filename');
+    return this.awsS3Service.getUrl(filename);
   }
 
   @Delete(':id')

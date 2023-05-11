@@ -14,4 +14,8 @@ export class UpdatePlayerDto {
   @IsMongoId()
   @IsOptional()
   category?: string;
+
+  @IsOptional()
+  @IsString()
+  urlPhoto?: string;
 }
