@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdatePlayerDto {
   @IsOptional()
@@ -8,4 +8,10 @@ export class UpdatePlayerDto {
   @IsOptional()
   @IsString()
   name?: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsMongoId()
+  @IsOptional()
+  category?: string;
 }

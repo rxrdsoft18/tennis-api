@@ -1,14 +1,15 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Inject,
   Logger,
+  NotFoundException,
   Param,
   Patch,
   Post,
-  UnprocessableEntityException,
 } from '@nestjs/common';
 import {
   BACKOFFICE_SERVICE,
@@ -17,7 +18,7 @@ import {
   UpdatePlayerDto,
 } from '@app/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { catchError, of, switchMap } from 'rxjs';
+import { catchError, firstValueFrom, map, of, switchMap } from 'rxjs';
 
 @Controller('v1/players')
 export class PlayersController {
@@ -38,18 +39,26 @@ export class PlayersController {
       switchMap((player) => of(player)),
       catchError((err) => {
         console.log(err, 'error');
-        throw new UnprocessableEntityException(err.message);
+        throw new BadRequestException(err.message);
       }),
     );
   }
 
   @Post()
   async create(@Body() createPlayerDto: CreatePlayerDto) {
+    await firstValueFrom(
+      this.backofficeClient.send('find-id-category', {
+        id: createPlayerDto.category,
+      }),
+    ).catch((err) => {
+      throw new NotFoundException(err.message);
+    });
+
     return this.backofficeClient.send('create-player', createPlayerDto).pipe(
       switchMap((player) => of(player)),
       catchError((err) => {
         console.log(err, 'error');
-        throw new UnprocessableEntityException(err.message);
+        throw new BadRequestException(err.message);
       }),
     );
   }
@@ -59,6 +68,16 @@ export class PlayersController {
     @Body() updatePlayerDto: UpdatePlayerDto,
     @Param() getPlayerDto: GetPlayerDto,
   ) {
+    if (updatePlayerDto.category) {
+      await firstValueFrom(
+        this.backofficeClient.send('find-id-category', {
+          id: updatePlayerDto.category,
+        }),
+      ).catch((err) => {
+        throw new NotFoundException(err.message);
+      });
+    }
+
     return this.backofficeClient
       .send('update-player', {
         id: getPlayerDto.id,
@@ -68,7 +87,7 @@ export class PlayersController {
         switchMap((player) => of(player)),
         catchError((err) => {
           console.log(err, 'error');
-          throw new UnprocessableEntityException(err.message);
+          throw new BadRequestException(err.message);
         }),
       );
   }
@@ -79,7 +98,7 @@ export class PlayersController {
       switchMap((player) => of(player)),
       catchError((err) => {
         console.log(err, 'error');
-        throw new UnprocessableEntityException(err.message);
+        throw new BadRequestException(err.message);
       }),
     );
   }

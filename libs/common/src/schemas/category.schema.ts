@@ -16,7 +16,7 @@ export class Category extends AbstractIdDocumentSchema {
   events: IEvent[];
 
   @Prop({
-    type: [{ type: MongooseSchema.Types.ObjectId, ref: Player.name }],
+    type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Player' }],
   })
   players: string[];
 }

@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { AbstractIdDocumentSchema } from '@app/common/repositories';
+import { Schema as MongooseSchema } from 'mongoose';
+import { Category } from '@app/common/schemas/category.schema';
 
 @Schema({ versionKey: false, collection: 'players', timestamps: true })
 export class Player extends AbstractIdDocumentSchema {
@@ -20,6 +22,9 @@ export class Player extends AbstractIdDocumentSchema {
 
   @Prop({ required: false })
   urlPhoto: string;
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Category' })
+  category: string;
 }
 
 export const PlayerSchema = SchemaFactory.createForClass(Player);

@@ -18,10 +18,6 @@ import {
         name: Category.name,
         schema: CategorySchema,
       },
-      {
-        name: Player.name,
-        schema: PlayerSchema,
-      },
     ]),
     RabbitmqModule,
   ],

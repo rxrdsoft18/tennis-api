@@ -4,6 +4,7 @@ import { BackofficeService } from './backoffice.service';
 import { RabbitmqModule } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
 import { CategoriesModule } from './categories/categories.module';
+import { PlayersModule } from './players/players.module';
 
 @Module({
   imports: [
@@ -11,8 +12,9 @@ import { CategoriesModule } from './categories/categories.module';
       isGlobal: true,
       envFilePath: './apps/backoffice/.env',
     }),
-    RabbitmqModule,
+    // RabbitmqModule,
     CategoriesModule,
+    PlayersModule,
   ],
   controllers: [BackofficeController],
   providers: [BackofficeService],
