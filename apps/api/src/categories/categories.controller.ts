@@ -1,15 +1,14 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Inject,
-  InternalServerErrorException,
   Logger,
   Param,
   Patch,
   Post,
-  UnprocessableEntityException,
 } from '@nestjs/common';
 import {
   AssignPlayerCategoryDto,
@@ -39,7 +38,7 @@ export class CategoriesController {
       switchMap((category) => of(category)),
       catchError((err) => {
         console.log(err, 'error');
-        throw new UnprocessableEntityException(err.message);
+        throw new BadRequestException(err.message);
       }),
     );
   }
@@ -53,7 +52,7 @@ export class CategoriesController {
         switchMap((data) => of(data)),
         catchError((err) => {
           console.log(err, 'error');
-          throw new InternalServerErrorException(err.message);
+          throw new BadRequestException(err.message);
         }),
       );
   }
@@ -72,7 +71,7 @@ export class CategoriesController {
         switchMap((data) => of(data)),
         catchError((err) => {
           console.log(err, 'error');
-          throw new InternalServerErrorException(err.message);
+          throw new BadRequestException(err.message);
         }),
       );
   }
@@ -87,7 +86,7 @@ export class CategoriesController {
         switchMap((data) => of(data)),
         catchError((err) => {
           console.log(err, 'error');
-          throw new InternalServerErrorException(err.message);
+          throw new BadRequestException(err.message);
         }),
       );
   }
@@ -98,7 +97,7 @@ export class CategoriesController {
       switchMap((data) => of(data)),
       catchError((err) => {
         console.log(err, 'error');
-        throw new InternalServerErrorException(err.message);
+        throw new BadRequestException(err.message);
       }),
     );
   }

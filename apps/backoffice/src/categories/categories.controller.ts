@@ -1,5 +1,11 @@
-import { Controller, Logger, UseFilters } from '@nestjs/common';
-import { ExceptionFilter, RabbitmqService } from '@app/common';
+import { Controller, Logger } from '@nestjs/common';
+import {
+  AssignPlayerCategoryDto,
+  CreateCategoryDto,
+  GetCategoryDto,
+  RabbitmqService,
+  UpdateCategoryDto,
+} from '@app/common';
 import {
   Ctx,
   MessagePattern,
@@ -23,35 +29,56 @@ export class CategoriesController {
   }
 
   @MessagePattern('find-id-category')
-  async handleCategory(@Payload() data: any, @Ctx() ctx: RmqContext) {
+  async handleCategory(
+    @Payload() data: GetCategoryDto,
+    @Ctx() ctx: RmqContext,
+  ) {
     console.log(data, ' find by id');
     this.rabbitmqService.acknowledgeMessage(ctx);
     return this.categoriesService.findById(data.id);
   }
 
   @MessagePattern('create-category')
-  async handleCreateCategory(@Payload() data: any, @Ctx() ctx: RmqContext) {
+  async handleCreateCategory(
+    @Payload() data: CreateCategoryDto,
+    @Ctx() ctx: RmqContext,
+  ) {
     this.rabbitmqService.acknowledgeMessage(ctx);
     return this.categoriesService.create(data);
   }
 
   @MessagePattern('update-category')
-  async handleUpdateCategory(@Payload() data: any, @Ctx() ctx: RmqContext) {
+  async handleUpdateCategory(
+    @Payload() data: { id: string; category: UpdateCategoryDto },
+    @Ctx() ctx: RmqContext,
+  ) {
     this.rabbitmqService.acknowledgeMessage(ctx);
     return this.categoriesService.update(data.id, data.category);
   }
 
   @MessagePattern('assign-player-category')
   async handleAssignPlayerCategory(
-    @Payload() data: any,
+    @Payload() data: AssignPlayerCategoryDto,
     @Ctx() ctx: RmqContext,
   ) {
     this.rabbitmqService.acknowledgeMessage(ctx);
     return this.categoriesService.assignPlayerToCategory(data);
   }
 
+  @MessagePattern('get-category-player')
+  async handleCategoryPlayer(
+    @Payload() data: { id: string },
+    @Ctx() ctx: RmqContext,
+  ) {
+    this.rabbitmqService.acknowledgeMessage(ctx);
+    return this.categoriesService.categoryByPlayerId(data.id);
+  }
+
   @MessagePattern('delete-category')
-  async handleDeleteCategory(@Payload() data: any, @Ctx() ctx: RmqContext) {
+  async handleDeleteCategory(
+    @Payload() data: GetCategoryDto,
+    @Ctx() ctx: RmqContext,
+  ) {
     this.rabbitmqService.acknowledgeMessage(ctx);
     return this.categoriesService.delete(data.id);
   }

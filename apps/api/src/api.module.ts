@@ -3,6 +3,7 @@ import { ApiController } from './api.controller';
 import { ConfigModule } from '@nestjs/config';
 import { CategoriesModule } from './categories/categories.module';
 import { PlayersModule } from './players/players.module';
+import { ChallengesModule } from './challenges/challenges.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { PlayersModule } from './players/players.module';
     }),
     CategoriesModule,
     PlayersModule,
+    ChallengesModule,
   ],
   controllers: [ApiController],
   providers: [],

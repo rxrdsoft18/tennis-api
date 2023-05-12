@@ -3,8 +3,6 @@ import { PlayersController } from './players.controller';
 import { PlayersService } from './players.service';
 import { PlayersRepository } from '@app/common/repositories/players.repository';
 import {
-  Category,
-  CategorySchema,
   MongodbMongooseModule,
   Player,
   PlayerSchema,
@@ -24,5 +22,6 @@ import {
   ],
   controllers: [PlayersController],
   providers: [PlayersService, PlayersRepository],
+  exports: [PlayersService],
 })
 export class PlayersModule {}

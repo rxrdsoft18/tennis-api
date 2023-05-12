@@ -36,6 +36,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/backoffice/tsconfig.app.json"
       }
+    },
+    "challenges": {
+      "type": "application",
+      "root": "apps/challenges",
+      "entryFile": "main",
+      "sourceRoot": "apps/challenges/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/challenges/tsconfig.app.json"
+      }
     }
   }
 }

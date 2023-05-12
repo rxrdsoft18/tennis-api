@@ -6,10 +6,9 @@ import {
   Category,
   CategorySchema,
   MongodbMongooseModule,
-  Player,
-  PlayerSchema,
   RabbitmqModule,
 } from '@app/common';
+import { PlayersModule } from '../players/players.module';
 @Module({
   imports: [
     MongodbMongooseModule,
@@ -20,8 +19,10 @@ import {
       },
     ]),
     RabbitmqModule,
+    PlayersModule,
   ],
   controllers: [CategoriesController],
   providers: [CategoriesService, CategoriesRepository],
+  exports: [CategoriesService],
 })
 export class CategoriesModule {}

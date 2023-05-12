@@ -11,13 +11,17 @@ import {
   CreateCategoryDto,
   UpdateCategoryDto,
 } from '@app/common';
-import { RpcException } from "@nestjs/microservices";
+import { RpcException } from '@nestjs/microservices';
+import { PlayersService } from '../players/players.service';
 
 @Injectable()
 export class CategoriesService {
   protected readonly logger = new Logger(CategoriesService.name);
 
-  constructor(private readonly categoriesRepository: CategoriesRepository) {}
+  constructor(
+    private readonly categoriesRepository: CategoriesRepository,
+    private readonly playersService: PlayersService,
+  ) {}
 
   async findAll() {
     return this.categoriesRepository.find({}).populate('players');
@@ -70,27 +74,28 @@ export class CategoriesService {
 
   async assignPlayerToCategory(data: AssignPlayerCategoryDto) {
     const { id, playerId } = data;
+    console.log(data, 'assign');
 
-    // const category = await this.findById(id);
-    // await this.playersService.findById(playerId);
-    // const existsPlayerInCategory = await this.existsPlayerInCategory(
-    //   id,
-    //   playerId,
-    // );
-    //
-    // if (existsPlayerInCategory.length > 0) {
-    //   throw new BadRequestException(
-    //     'The player was already assigned to this category',
-    //   );
-    // }
-    //
-    // category.players.push(playerId);
-    // return this.categoriesRepository.findOneAndUpdate(
-    //   {
-    //     _id: id,
-    //   },
-    //   category,
-    // );
+    const category = await this.findById(id);
+    await this.playersService.findById(playerId);
+    const existsPlayerInCategory = await this.existsPlayerInCategory(
+      id,
+      playerId,
+    );
+
+    if (existsPlayerInCategory.length > 0) {
+      throw new RpcException(
+        'The player was already assigned to this category',
+      );
+    }
+
+    category.players.push(playerId);
+    return this.categoriesRepository.findOneAndUpdate(
+      {
+        _id: id,
+      },
+      category,
+    );
   }
 
   async categoryByPlayerId(id: string) {

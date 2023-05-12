@@ -5,3 +5,8 @@ export * from './categories/assign-player-category.dto';
 export * from './players/get-player.dto';
 export * from './players/update-player.dto';
 export * from './players/create-player.dto';
+export * from './challenges/update-challenge.dto';
+export * from './challenges/get-challenge.dto';
+export * from './challenges/assign-challenge-game.dto';
+export * from './challenges/create-challenge.dto';
+export * from './challenges/get-challenge-player.dto';
