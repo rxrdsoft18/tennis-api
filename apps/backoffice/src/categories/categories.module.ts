@@ -19,7 +19,7 @@ import { PlayersModule } from '../players/players.module';
       },
     ]),
     RabbitmqModule,
-    PlayersModule,
+    // PlayersModule,
   ],
   controllers: [CategoriesController],
   providers: [CategoriesService, CategoriesRepository],

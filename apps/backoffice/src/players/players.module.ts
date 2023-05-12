@@ -8,6 +8,7 @@ import {
   PlayerSchema,
   RabbitmqModule,
 } from '@app/common';
+import { CategoriesModule } from '../categories/categories.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import {
       },
     ]),
     RabbitmqModule,
+    CategoriesModule,
   ],
   controllers: [PlayersController],
   providers: [PlayersService, PlayersRepository],

@@ -33,7 +33,6 @@ export class CategoriesController {
     @Payload() data: GetCategoryDto,
     @Ctx() ctx: RmqContext,
   ) {
-    console.log(data, ' find by id');
     this.rabbitmqService.acknowledgeMessage(ctx);
     return this.categoriesService.findById(data.id);
   }
@@ -56,14 +55,14 @@ export class CategoriesController {
     return this.categoriesService.update(data.id, data.category);
   }
 
-  @MessagePattern('assign-player-category')
-  async handleAssignPlayerCategory(
-    @Payload() data: AssignPlayerCategoryDto,
-    @Ctx() ctx: RmqContext,
-  ) {
-    this.rabbitmqService.acknowledgeMessage(ctx);
-    return this.categoriesService.assignPlayerToCategory(data);
-  }
+  // @MessagePattern('assign-player-category')
+  // async handleAssignPlayerCategory(
+  //   @Payload() data: AssignPlayerCategoryDto,
+  //   @Ctx() ctx: RmqContext,
+  // ) {
+  //   this.rabbitmqService.acknowledgeMessage(ctx);
+  //   return this.categoriesService.assignPlayerToCategory(data);
+  // }
 
   @MessagePattern('get-category-player')
   async handleCategoryPlayer(

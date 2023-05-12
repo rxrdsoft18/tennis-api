@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { BackofficeController } from './backoffice.controller';
 import { BackofficeService } from './backoffice.service';
-import { RabbitmqModule } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
 import { CategoriesModule } from './categories/categories.module';
 import { PlayersModule } from './players/players.module';

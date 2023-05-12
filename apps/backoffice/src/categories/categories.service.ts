@@ -20,7 +20,7 @@ export class CategoriesService {
 
   constructor(
     private readonly categoriesRepository: CategoriesRepository,
-    private readonly playersService: PlayersService,
+    // private readonly playersService: PlayersService,
   ) {}
 
   async findAll() {
@@ -72,31 +72,31 @@ export class CategoriesService {
       .in([playerId]);
   }
 
-  async assignPlayerToCategory(data: AssignPlayerCategoryDto) {
-    const { id, playerId } = data;
-    console.log(data, 'assign');
-
-    const category = await this.findById(id);
-    await this.playersService.findById(playerId);
-    const existsPlayerInCategory = await this.existsPlayerInCategory(
-      id,
-      playerId,
-    );
-
-    if (existsPlayerInCategory.length > 0) {
-      throw new RpcException(
-        'The player was already assigned to this category',
-      );
-    }
-
-    category.players.push(playerId);
-    return this.categoriesRepository.findOneAndUpdate(
-      {
-        _id: id,
-      },
-      category,
-    );
-  }
+  // async assignPlayerToCategory(data: AssignPlayerCategoryDto) {
+  //   const { id, playerId } = data;
+  //   console.log(data, 'assign');
+  //
+  //   const category = await this.findById(id);
+  //   await this.playersService.findById(playerId);
+  //   const existsPlayerInCategory = await this.existsPlayerInCategory(
+  //     id,
+  //     playerId,
+  //   );
+  //
+  //   if (existsPlayerInCategory.length > 0) {
+  //     throw new RpcException(
+  //       'The player was already assigned to this category',
+  //     );
+  //   }
+  //
+  //   category.players.push(playerId);
+  //   return this.categoriesRepository.findOneAndUpdate(
+  //     {
+  //       _id: id,
+  //     },
+  //     category,
+  //   );
+  // }
 
   async categoryByPlayerId(id: string) {
     const category = await this.categoriesRepository

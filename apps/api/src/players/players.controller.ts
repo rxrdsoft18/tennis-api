@@ -54,14 +54,6 @@ export class PlayersController {
 
   @Post()
   async create(@Body() createPlayerDto: CreatePlayerDto) {
-    await firstValueFrom(
-      this.backofficeClient.send('find-id-category', {
-        id: createPlayerDto.category,
-      }),
-    ).catch((err) => {
-      throw new NotFoundException(err.message);
-    });
-
     return this.backofficeClient.send('create-player', createPlayerDto).pipe(
       switchMap((player) => of(player)),
       catchError((err) => {
@@ -76,16 +68,6 @@ export class PlayersController {
     @Body() updatePlayerDto: UpdatePlayerDto,
     @Param() getPlayerDto: GetPlayerDto,
   ) {
-    if (updatePlayerDto.category) {
-      await firstValueFrom(
-        this.backofficeClient.send('find-id-category', {
-          id: updatePlayerDto.category,
-        }),
-      ).catch((err) => {
-        throw new NotFoundException(err.message);
-      });
-    }
-
     return this.backofficeClient
       .send('update-player', {
         id: getPlayerDto.id,
@@ -118,6 +100,12 @@ export class PlayersController {
     file: Express.Multer.File,
     @Param('id') id: string,
   ) {
+    await firstValueFrom(
+      this.backofficeClient.send('find-id-player', { id }),
+    ).catch((err) => {
+      throw new BadRequestException(err.message);
+    });
+
     await this.awsS3Service.upload(
       file.originalname,
       file.buffer,
