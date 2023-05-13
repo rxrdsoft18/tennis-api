@@ -12,3 +12,4 @@ export * from './challenges/create-challenge.dto';
 export * from './challenges/get-challenge-player.dto';
 export * from './challenges/answer-challenge.dto';
 export * from './challenges/game.dto';
+export * from './rankings/get-ranking-category.dto'

@@ -1,13 +1,15 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import {
   BACKOFFICE_SERVICE,
   EventRanking,
   GameDto,
+  GetRankingCategoryDto,
+  groupBy,
   Ranking,
-  RankingsRepository,
-} from '@app/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+  RankingsRepository
+} from "@app/common";
+import { ClientProxy } from "@nestjs/microservices";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class RankingsService {
@@ -61,7 +63,18 @@ export class RankingsService {
     );
   }
 
-  async findAll() {
-    return this.rankingsRepository.find({}).populate('player');
+  async findByCategoryId(data: GetRankingCategoryDto)
+  {
+    console.log(data,' ranking category');
+    const rankings = await this.rankingsRepository.find({});
+
+    //
+    // console.log(rankingGroupByPlayers, 'player');
+    //
+    // for (const player of rankingGroupByPlayers) {
+    //   console.log(player, ' player');
+    // }
+
+    return groupBy(rankings, 'player');
   }
 }

@@ -1,7 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
 import { RankingsService } from './rankings.service';
-import { Ctx, EventPattern, MessagePattern, Payload, RmqContext } from "@nestjs/microservices";
-import { RabbitmqService } from '@app/common';
+import {
+  Ctx,
+  EventPattern,
+  MessagePattern,
+  Payload,
+  RmqContext,
+} from '@nestjs/microservices';
+import { GetRankingCategoryDto, RabbitmqService } from '@app/common';
 
 @Controller()
 export class RankingsController {
@@ -16,10 +22,12 @@ export class RankingsController {
     await this.rankingsService.processGame(data);
   }
 
-  @MessagePattern('find-rankings')
-  async handleFindRankings(@Ctx() ctx: RmqContext)
-  {
+  @MessagePattern('find-rankings-category')
+  async handleFindRankingsByCategory(
+    @Payload() data: GetRankingCategoryDto,
+    @Ctx() ctx: RmqContext,
+  ) {
     this.rabbitMqService.acknowledgeMessage(ctx);
-    return this.rankingsService.findAll();
+    return this.rankingsService.findByCategoryId(data);
   }
 }

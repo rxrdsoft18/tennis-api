@@ -1,5 +1,5 @@
-import { Controller, Get, Inject } from '@nestjs/common';
-import { RANKINGS_SERVICE } from '@app/common';
+import { Controller, Get, Inject, Param } from '@nestjs/common';
+import { GetRankingCategoryDto, RANKINGS_SERVICE } from '@app/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Controller('v1/rankings')
@@ -8,8 +8,11 @@ export class RankingsController {
     @Inject(RANKINGS_SERVICE) private readonly rankingsClient: ClientProxy,
   ) {}
 
-  @Get()
-  async findAll() {
-    return this.rankingsClient.send('find-rankings', {});
+  @Get(':categoryId')
+  async findByCategory(@Param() getRankingCategoryDto: GetRankingCategoryDto) {
+    return this.rankingsClient.send(
+      'find-rankings-category',
+      getRankingCategoryDto,
+    );
   }
 }
