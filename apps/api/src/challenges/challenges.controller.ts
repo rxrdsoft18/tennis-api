@@ -11,13 +11,14 @@ import {
   Post,
 } from '@nestjs/common';
 import {
+  AnswerChallengeDto,
   AssignChallengeGameDto,
   CHALLENGES_SERVICE,
   CreateChallengeDto,
   GetChallengeDto,
   GetChallengePlayerDto,
-  UpdateChallengeDto,
-} from '@app/common';
+  UpdateChallengeDto
+} from "@app/common";
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, of, switchMap } from 'rxjs';
 
@@ -94,6 +95,25 @@ export class ChallengesController {
       );
   }
 
+  @Post(':id/answer')
+  async answerChallenge(
+    @Body() answerChallengeDto: AnswerChallengeDto,
+    @Param() getChallengeDto: GetChallengeDto,
+  ) {
+    return this.challengesClient
+      .send('answer-challenge', {
+        id: getChallengeDto.id,
+        challenge: answerChallengeDto,
+      })
+      .pipe(
+        switchMap((challenge) => of(challenge)),
+        catchError((err) => {
+          console.log(err, 'error');
+          throw new BadRequestException(err.message);
+        }),
+      );
+  }
+
   @Post('/:id/game')
   async assignChallengeToGame(
     @Body() assignChallengeGame: AssignChallengeGameDto,
@@ -102,7 +122,7 @@ export class ChallengesController {
     return this.challengesClient
       .send('assign-challenge-game', {
         id: getChallengeDto.id,
-        result: assignChallengeGame.result,
+        assignChallenge: assignChallengeGame,
       })
       .pipe(
         switchMap((challenge) => of(challenge)),

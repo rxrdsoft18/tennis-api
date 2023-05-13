@@ -16,7 +16,7 @@ export class Challenge extends AbstractIdDocumentSchema {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Player' })
   requestPlayer: string;
 
-  @Prop()
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Category' })
   category: string;
 
   @Prop({

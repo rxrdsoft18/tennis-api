@@ -1,23 +1,17 @@
-import { IsDateString, IsEnum, IsOptional, IsString } from 'class-validator';
-import { ChallengeStatus } from '@app/common/constants/challenge-status.enum';
-
-// export enum ChallengeStatus {
-//   DONE = 'DONE',
-//   PENDING = 'PENDING',
-//   ACCEPTED = 'ACCEPTED',
-//   REJECTED = 'REJECTED',
-//   CANCELED = 'CANCELED',
-// }
+import {
+  IsDateString,
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+} from 'class-validator';
 
 export class UpdateChallengeDto {
   @IsOptional()
   @IsDateString()
   dateAndTime?: Date;
 
+  @IsNotEmpty()
   @IsOptional()
-  @IsEnum(ChallengeStatus)
-  @IsString()
-  status?: ChallengeStatus;
-
-  dateAndTimeResponse?: Date;
+  @IsMongoId()
+  category?: string;
 }

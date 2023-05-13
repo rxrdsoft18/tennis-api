@@ -64,14 +64,14 @@ export class CategoriesController {
   //   return this.categoriesService.assignPlayerToCategory(data);
   // }
 
-  @MessagePattern('get-category-player')
-  async handleCategoryPlayer(
-    @Payload() data: { id: string },
-    @Ctx() ctx: RmqContext,
-  ) {
-    this.rabbitmqService.acknowledgeMessage(ctx);
-    return this.categoriesService.categoryByPlayerId(data.id);
-  }
+  // @MessagePattern('get-category-player')
+  // async handleCategoryPlayer(
+  //   @Payload() data: { id: string },
+  //   @Ctx() ctx: RmqContext,
+  // ) {
+  //   this.rabbitmqService.acknowledgeMessage(ctx);
+  //   return this.categoriesService.categoryByPlayerId(data.id);
+  // }
 
   @MessagePattern('delete-category')
   async handleDeleteCategory(

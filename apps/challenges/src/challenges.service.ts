@@ -1,15 +1,19 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
+  AnswerChallengeDto,
   AssignChallengeGameDto,
   BACKOFFICE_SERVICE,
   ChallengesRepository,
   CreateChallengeDto,
+  GameDto,
   GamesRepository,
+  RANKINGS_SERVICE,
   UpdateChallengeDto,
 } from '@app/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { ChallengeStatus } from '@app/common/constants/challenge-status.enum';
 import { firstValueFrom } from 'rxjs';
+import { IGame } from '@app/common/interfaces/game.interface';
 
 @Injectable()
 export class ChallengesService {
@@ -18,11 +22,11 @@ export class ChallengesService {
     private readonly challengesRepository: ChallengesRepository,
     private readonly gamesRepository: GamesRepository,
     @Inject(BACKOFFICE_SERVICE) private readonly backofficeClient: ClientProxy,
+    @Inject(RANKINGS_SERVICE) private readonly rankingsClient: ClientProxy,
   ) {}
   async findById(id: string) {
     const challenge = await this.challengesRepository
       .findOne({ _id: id })
-      .populate('players')
       .populate('requestPlayer')
       .populate('game');
 
@@ -38,7 +42,6 @@ export class ChallengesService {
       .where('players')
       .in([playerId])
       .populate('players')
-      .populate('requestPlayer')
       .populate('game');
   }
 
@@ -107,7 +110,7 @@ export class ChallengesService {
       status: ChallengeStatus.PENDING,
       dateAndTimeResponse: null,
       requestPlayer: requestPlayerId,
-      category: categoryPlayer.name,
+      category: categoryPlayer.category._id,
       game: null,
     });
   }
@@ -115,13 +118,27 @@ export class ChallengesService {
   async update(id: string, updateChallengeDto: Partial<UpdateChallengeDto>) {
     await this.findById(id);
 
-    if (updateChallengeDto.status) {
-      updateChallengeDto.dateAndTimeResponse = new Date();
+    return this.challengesRepository.findOneAndUpdate(
+      { _id: id },
+      updateChallengeDto,
+    );
+  }
+
+  async answerChallenge(id: string, answerChallengeDto: AnswerChallengeDto) {
+    const challenge = await this.findById(id);
+
+    if (challenge.status !== ChallengeStatus.PENDING) {
+      throw new RpcException(
+        'Only challenges with a PENDING status can be updated!',
+      );
     }
 
     return this.challengesRepository.findOneAndUpdate(
       { _id: id },
-      updateChallengeDto,
+      {
+        status: answerChallengeDto.status,
+        dateAndTimeResponse: new Date(),
+      },
     );
   }
 
@@ -131,19 +148,42 @@ export class ChallengesService {
   ) {
     console.log(assignChallengeGame, 'assign challenge');
     const challenge = await this.findById(id);
-    const game = await this.gamesRepository.create({
+
+    if (challenge.status === ChallengeStatus.DONE) {
+      throw new RpcException('challenge already done');
+    }
+
+    if (challenge.status !== ChallengeStatus.ACCEPTED) {
+      throw new RpcException(
+        'Matches can only be started on challenges accepted by opponents!',
+      );
+    }
+
+    const game: GameDto = {
       result: assignChallengeGame.result,
       players: challenge.players,
       category: challenge.category,
-    });
+      challenge: id,
+      winnerPlayerId: assignChallengeGame.winnerPlayerId,
+    };
+
+    const gameCreated = await this.gamesRepository.create(game);
 
     challenge.status = ChallengeStatus.DONE;
-    challenge.game = game;
+    challenge.game = gameCreated;
 
     try {
-      await this.challengesRepository.findOneAndUpdate({ _id: id }, challenge);
+      const challengeUpdate = await this.challengesRepository.findOneAndUpdate(
+        { _id: id },
+        challenge,
+      );
+      this.rankingsClient.emit('process-game', {
+        id: gameCreated._id,
+        game,
+      });
+      return challengeUpdate;
     } catch (e) {
-      await this.gamesRepository.findOneAndDelete({ _id: game._id });
+      await this.gamesRepository.findOneAndDelete({ _id: gameCreated._id });
       throw new RpcException('Error assign challenge to game');
     }
   }

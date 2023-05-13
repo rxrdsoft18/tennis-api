@@ -10,7 +10,7 @@ import {
   GameSchema,
   GamesRepository,
   MongodbMongooseModule, Player, PlayerSchema,
-  RabbitmqModule
+  RabbitmqModule, RANKINGS_SERVICE
 } from "@app/common";
 import { ConfigModule } from '@nestjs/config';
 
@@ -39,6 +39,10 @@ import { ConfigModule } from '@nestjs/config';
     RabbitmqModule.registerMmq({
       serviceName: BACKOFFICE_SERVICE,
       queue: 'BACKOFFICE',
+    }),
+    RabbitmqModule.registerMmq({
+      serviceName: RANKINGS_SERVICE,
+      queue: 'RANKINGS',
     }),
   ],
   controllers: [ChallengesController],

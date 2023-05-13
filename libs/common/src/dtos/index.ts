@@ -10,3 +10,5 @@ export * from './challenges/get-challenge.dto';
 export * from './challenges/assign-challenge-game.dto';
 export * from './challenges/create-challenge.dto';
 export * from './challenges/get-challenge-player.dto';
+export * from './challenges/answer-challenge.dto';
+export * from './challenges/game.dto';

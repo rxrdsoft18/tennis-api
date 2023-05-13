@@ -62,6 +62,19 @@ export class PlayersService {
     );
   }
 
+  async categoryByPlayerId(id: string) {
+    const player = await this.playersRepository
+      .findOne({ _id: id })
+      .populate('category');
+
+    if (!player.category) {
+      throw new RpcException(
+        `There is no category associated with a player Id: ${id}`,
+      );
+    }
+    return player;
+  }
+
   async delete(id: string) {
     await this.findById(id);
     return this.playersRepository.findOneAndDelete({ _id: id });

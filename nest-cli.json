@@ -45,6 +45,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/challenges/tsconfig.app.json"
       }
+    },
+    "rankings": {
+      "type": "application",
+      "root": "apps/rankings",
+      "entryFile": "main",
+      "sourceRoot": "apps/rankings/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/rankings/tsconfig.app.json"
+      }
     }
   }
 }

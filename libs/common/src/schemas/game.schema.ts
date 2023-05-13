@@ -13,6 +13,9 @@ export class Game extends AbstractIdDocumentSchema {
   })
   players: string[];
 
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Player' })
+  winnerPlayerId: string;
+
   // @Prop({ type: MongooseSchema.Types.ObjectId, ref: Challenge.name })
   // challenge: string;
 

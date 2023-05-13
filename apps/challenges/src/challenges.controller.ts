@@ -12,6 +12,7 @@ import {
   RabbitmqService,
   UpdateChallengeDto,
 } from '@app/common';
+import { ChallengeStatus } from '@app/common/constants/challenge-status.enum';
 
 @Controller()
 export class ChallengesController {
@@ -59,13 +60,27 @@ export class ChallengesController {
     return this.challengesService.update(data.id, data.challenge);
   }
 
-  @MessagePattern('assign-challenge-game')
-  async handleAssignChallengeGame(
-    @Payload() data: { id: string; result: AssignChallengeGameDto },
+  @MessagePattern('answer-challenge')
+  async handleAnswerChallenge(
+    @Payload() data: { id: string; status: ChallengeStatus },
     @Ctx() ctx: RmqContext,
   ) {
     this.rabbitMqService.acknowledgeMessage(ctx);
-    return this.challengesService.assignChallengeToGame(data.id, data.result);
+    return this.challengesService.answerChallenge(data.id, {
+      status: data.status,
+    });
+  }
+
+  @MessagePattern('assign-challenge-game')
+  async handleAssignChallengeGame(
+    @Payload() data: { id: string; assignChallenge: AssignChallengeGameDto },
+    @Ctx() ctx: RmqContext,
+  ) {
+    this.rabbitMqService.acknowledgeMessage(ctx);
+    return this.challengesService.assignChallengeToGame(
+      data.id,
+      data.assignChallenge,
+    );
   }
 
   @MessagePattern('delete-challenge')

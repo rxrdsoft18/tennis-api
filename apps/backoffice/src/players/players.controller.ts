@@ -48,6 +48,15 @@ export class PlayersController {
     return this.playersService.update(data.id, data.player);
   }
 
+  @MessagePattern('get-category-player')
+  async handleCategoryPlayer(
+    @Payload() data: { id: string },
+    @Ctx() ctx: RmqContext,
+  ) {
+    this.rabbitmqService.acknowledgeMessage(ctx);
+    return this.playersService.categoryByPlayerId(data.id);
+  }
+
   @MessagePattern('delete-player')
   async handleDeletePlayer(
     @Payload() data: { id: string },
