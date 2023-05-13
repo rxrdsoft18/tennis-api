@@ -5,6 +5,8 @@ import { ConfigModule } from '@nestjs/config';
 import {
   BACKOFFICE_SERVICE,
   MongodbMongooseModule,
+  Player,
+  PlayerSchema,
   RabbitmqModule,
   Ranking,
   RankingSchema,
@@ -23,6 +25,10 @@ import {
       {
         name: Ranking.name,
         schema: RankingSchema,
+      },
+      {
+        name: Player.name,
+        schema: PlayerSchema,
       },
     ]),
     RabbitmqModule.registerMmq({

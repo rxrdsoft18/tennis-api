@@ -103,7 +103,7 @@ export class ChallengesController {
     return this.challengesClient
       .send('answer-challenge', {
         id: getChallengeDto.id,
-        challenge: answerChallengeDto,
+        status: answerChallengeDto.status,
       })
       .pipe(
         switchMap((challenge) => of(challenge)),

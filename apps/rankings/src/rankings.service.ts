@@ -60,4 +60,8 @@ export class RankingsService {
       }),
     );
   }
+
+  async findAll() {
+    return this.rankingsRepository.find({}).populate('player');
+  }
 }

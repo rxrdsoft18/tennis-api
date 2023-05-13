@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CategoriesModule } from './categories/categories.module';
 import { PlayersModule } from './players/players.module';
 import { ChallengesModule } from './challenges/challenges.module';
+import { RankingsModule } from './rankings/rankings.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ChallengesModule } from './challenges/challenges.module';
     CategoriesModule,
     PlayersModule,
     ChallengesModule,
+    RankingsModule,
   ],
   controllers: [ApiController],
   providers: [],
