@@ -1,15 +1,22 @@
-import { Inject, Injectable, Logger } from "@nestjs/common";
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   BACKOFFICE_SERVICE,
+  countBy,
   EventRanking,
   GameDto,
   GetRankingCategoryDto,
   groupBy,
+  orderBy,
   Ranking,
-  RankingsRepository
-} from "@app/common";
-import { ClientProxy } from "@nestjs/microservices";
-import { firstValueFrom } from "rxjs";
+  RankingsRepository,
+  sumBy,
+} from '@app/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
+import {
+  HistoryGame,
+  RankingResponse,
+} from './interfaces/ranking-response.interface';
 
 @Injectable()
 export class RankingsService {
@@ -63,18 +70,39 @@ export class RankingsService {
     );
   }
 
-  async findByCategoryId(data: GetRankingCategoryDto)
-  {
-    console.log(data,' ranking category');
-    const rankings = await this.rankingsRepository.find({});
+  async findByCategoryId(data: GetRankingCategoryDto) {
+    console.log(data, ' ranking category');
+    const rankingsResult = await this.rankingsRepository.find({});
 
-    //
-    // console.log(rankingGroupByPlayers, 'player');
-    //
-    // for (const player of rankingGroupByPlayers) {
-    //   console.log(player, ' player');
-    // }
+    const groups = groupBy(rankingsResult, 'player');
 
-    return groupBy(rankings, 'player');
+    const rankings = Object.keys(groups).map((playerId) => {
+      return {
+        player: playerId,
+        history: countBy(groups[playerId], 'event'),
+        points: sumBy(groups[playerId], 'points'),
+      };
+    });
+
+    const rankingsSort = orderBy(rankings, 'points', 'desc');
+
+    const rankingResponseList: RankingResponse[] = [];
+
+    rankingsSort.forEach((item, index) => {
+      const rankingResponse: RankingResponse = {};
+      rankingResponse.player = item.player;
+      rankingResponse.position = index + 1;
+      rankingResponse.points = item.points;
+
+      const historyGames: HistoryGame = {};
+      historyGames.victory = item.history[EventRanking.VICTORY] || 0;
+      historyGames.defeat = item.history[EventRanking.DEFEAT] || 0;
+
+      rankingResponse.historyGames = historyGames;
+
+      rankingResponseList.push(rankingResponse);
+    });
+
+    return rankingResponseList;
   }
 }
