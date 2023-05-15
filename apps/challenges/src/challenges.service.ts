@@ -7,13 +7,13 @@ import {
   CreateChallengeDto,
   GameDto,
   GamesRepository,
+  NOTIFICATIONS_SERVICE,
   RANKINGS_SERVICE,
   UpdateChallengeDto,
 } from '@app/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { ChallengeStatus } from '@app/common/constants/challenge-status.enum';
 import { firstValueFrom } from 'rxjs';
-import { IGame } from '@app/common/interfaces/game.interface';
 
 @Injectable()
 export class ChallengesService {
@@ -23,6 +23,8 @@ export class ChallengesService {
     private readonly gamesRepository: GamesRepository,
     @Inject(BACKOFFICE_SERVICE) private readonly backofficeClient: ClientProxy,
     @Inject(RANKINGS_SERVICE) private readonly rankingsClient: ClientProxy,
+    @Inject(NOTIFICATIONS_SERVICE)
+    private readonly notificationsClient: ClientProxy,
   ) {}
   async findById(id: string) {
     const challenge = await this.challengesRepository
@@ -105,7 +107,7 @@ export class ChallengesService {
       throw new RpcException(err.message);
     });
 
-    return this.challengesRepository.create({
+    const createdChallenge = await this.challengesRepository.create({
       ...createChallengeDto,
       status: ChallengeStatus.PENDING,
       dateAndTimeResponse: null,
@@ -113,6 +115,10 @@ export class ChallengesService {
       category: categoryPlayer.category._id,
       game: null,
     });
+
+    this.notificationsClient.emit('created-challenge', createChallengeDto);
+
+    return createdChallenge;
   }
 
   async update(id: string, updateChallengeDto: Partial<UpdateChallengeDto>) {

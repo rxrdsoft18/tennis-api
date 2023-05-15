@@ -8,7 +8,6 @@ import {
   Inject,
   Logger,
   MaxFileSizeValidator,
-  NotFoundException,
   Param,
   ParseFilePipe,
   Patch,
@@ -25,7 +24,7 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, firstValueFrom, of, switchMap } from 'rxjs';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AwsS3Service } from '../aws/aws-s3.service';
+import { AwsS3Service } from '@app/common/services/aws-s3.service';
 
 @Controller('v1/players')
 export class PlayersController {

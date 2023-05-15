@@ -38,3 +38,4 @@ lerna-debug.log*
 apps/api/.env
 apps/backoffice/.env
 apps/challenges/.env
+apps/notifications/.env
