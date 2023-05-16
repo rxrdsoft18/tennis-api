@@ -12,5 +12,7 @@ export * from './challenges/create-challenge.dto';
 export * from './challenges/get-challenge-player.dto';
 export * from './challenges/answer-challenge.dto';
 export * from './challenges/game.dto';
-export * from './rankings/get-ranking-category.dto'
+export * from './rankings/get-ranking-category.dto';
 export * from './aws/send-email.dto';
+export * from './auth/auth-login.dto';
+export * from './auth/auth-register.dto';

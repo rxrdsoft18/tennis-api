@@ -12,9 +12,9 @@ import {
   ParseFilePipe,
   Patch,
   Post,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
+  UploadedFile, UseGuards,
+  UseInterceptors
+} from "@nestjs/common";
 import {
   BACKOFFICE_SERVICE,
   CreatePlayerDto,
@@ -25,6 +25,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { catchError, firstValueFrom, of, switchMap } from 'rxjs';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AwsS3Service } from '@app/common/services/aws-s3.service';
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller('v1/players')
 export class PlayersController {
@@ -36,6 +37,7 @@ export class PlayersController {
   ) {}
 
   @Get()
+  @UseGuards(AuthGuard('jwt'))
   async getAll() {
     return this.backofficeClient.send('all-players', {});
   }
