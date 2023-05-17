@@ -107,18 +107,18 @@ export class ChallengesService {
       throw new RpcException(err.message);
     });
 
-    const createdChallenge = await this.challengesRepository.create({
-      ...createChallengeDto,
-      status: ChallengeStatus.PENDING,
-      dateAndTimeResponse: null,
-      requestPlayer: requestPlayerId,
-      category: categoryPlayer.category._id,
-      game: null,
-    });
+    // const createdChallenge = await this.challengesRepository.create({
+    //   ...createChallengeDto,
+    //   status: ChallengeStatus.PENDING,
+    //   dateAndTimeResponse: null,
+    //   requestPlayer: requestPlayerId,
+    //   category: categoryPlayer.category._id,
+    //   game: null,
+    // });
 
     this.notificationsClient.emit('created-challenge', createChallengeDto);
 
-    return createdChallenge;
+    return createChallengeDto;
   }
 
   async update(id: string, updateChallengeDto: Partial<UpdateChallengeDto>) {

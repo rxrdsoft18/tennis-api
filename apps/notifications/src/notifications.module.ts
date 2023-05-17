@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { NotificationsController } from './notifications.controller';
 import { NotificationsService } from './notifications.service';
-import { AwsModule, BACKOFFICE_SERVICE, RabbitmqModule } from "@app/common";
+import { AwsSesModule, BACKOFFICE_SERVICE, RabbitmqModule } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -15,7 +15,7 @@ import { ConfigModule } from '@nestjs/config';
       serviceName: BACKOFFICE_SERVICE,
       queue: 'BACKOFFICE',
     }),
-    AwsModule,
+    AwsSesModule,
   ],
   controllers: [NotificationsController],
   providers: [NotificationsService],

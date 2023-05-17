@@ -5,25 +5,23 @@ import {
   CognitoUserAttribute,
   CognitoUserPool,
 } from 'amazon-cognito-identity-js';
-import { ConfigService } from '@nestjs/config';
 import { AuthLoginDto, AuthRegisterDto } from '@app/common';
+import { AwsCognitoConfig } from '@app/common/config/aws-cognito.config';
 
 @Injectable()
 export class AwsCognitoService {
   private readonly userPool: CognitoUserPool;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly awsCognitoConfig: AwsCognitoConfig) {
     this.userPool = new CognitoUserPool({
-      UserPoolId: this.configService.get('AWS_COGNITO_USER_POOL_ID'),
-      ClientId: this.configService.get('AWS_COGNITO_CLIENT_ID'),
+      UserPoolId: this.awsCognitoConfig.AWS_COGNITO_USER_POOL_ID,
+      ClientId: this.awsCognitoConfig.AWS_COGNITO_CLIENT_ID,
     });
   }
 
   async registerUser(authRegisterDto: AuthRegisterDto) {
     const { name, email, password, phone } = authRegisterDto;
     console.log(authRegisterDto, 'register');
-    console.log(this.configService.get('AWS_COGNITO_USER_POOL_ID'), ' pool id');
-    console.log(this.configService.get('AWS_COGNITO_CLIENT_ID'), ' client id');
 
     return new Promise((resolve, reject) => {
       this.userPool.signUp(

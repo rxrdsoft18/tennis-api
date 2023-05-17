@@ -1,11 +1,16 @@
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import { Injectable, Logger } from '@nestjs/common';
 import { SendEmailDto } from '@app/common/dtos/aws/send-email.dto';
+import { AwsSesConfig } from '@app/common/config/aws-ses.config';
 
 @Injectable()
 export class AwsSesService {
   protected readonly logger = new Logger(AwsSesService.name);
-  private readonly client = new SESClient({});
+  private readonly client = new SESClient({
+    region: this.awsSESConfig.AWS_REGION,
+  });
+
+  constructor(private readonly awsSESConfig: AwsSesConfig) {}
 
   async sendEmail(options: SendEmailDto) {
     const params = {
