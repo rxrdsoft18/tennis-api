@@ -20,6 +20,62 @@ services:
     volumes:
       - tennis-api-data:/data/db
 
+  api:
+    build:
+      context: ./
+      dockerfile: ./apps/api/Dockerfile
+      target: development
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+    command: npm run start:dev api
+
+  backoffice:
+    build:
+      context: ./
+      dockerfile: ./apps/backoffice/Dockerfile
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+    command: npm run start:dev backoffice
+
+  challenges:
+    build:
+      context: ./
+      dockerfile: ./apps/challenges/Dockerfile
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+    command: npm run start:dev challenges
+
+  notifications:
+    build:
+      context: ./
+      dockerfile: ./apps/notifications/Dockerfile
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+    command: npm run start:dev notifications
+
+  rankings:
+    build:
+      context: ./
+      dockerfile: ./apps/rankings/Dockerfile
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+    command: npm run start:dev rankings
 
 volumes:
   tennis-api-data:
