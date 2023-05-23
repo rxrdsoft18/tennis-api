@@ -1,5 +1,12 @@
 import { Body, Controller, Logger, Post } from '@nestjs/common';
-import { AuthLoginDto, AuthRegisterDto, AwsCognitoService } from '@app/common';
+import {
+  AuthLoginDto,
+  AuthRegisterDto,
+  AwsCognitoService,
+  ChangePasswordDto,
+  ConfirmPasswordDto,
+  ForgotPasswordDto,
+} from '@app/common';
 
 @Controller('v1/auth')
 export class AuthController {
@@ -17,5 +24,21 @@ export class AuthController {
     this.logger.log(authLoginDto);
     console.log(process.env.AWS_COGNITO_AUTHORITY);
     return this.awsCognitoService.authenticateUser(authLoginDto);
+  }
+
+  @Post('change-password')
+  async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
+    this.logger.log(changePasswordDto);
+    return this.awsCognitoService.changeUserPassword(changePasswordDto);
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return await this.awsCognitoService.forgotUserPassword(forgotPasswordDto);
+  }
+
+  @Post('confirm-password')
+  async confirmPassword(@Body() confirmPasswordDto: ConfirmPasswordDto) {
+    return await this.awsCognitoService.confirmUserPassword(confirmPasswordDto);
   }
 }
